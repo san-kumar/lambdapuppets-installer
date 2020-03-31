@@ -1,0 +1,32 @@
+{
+  "name": "lambdapuppets/installer",
+  "description": "Installer for lambdapuppets",
+  "type": "library",
+  "require": {
+    "aws/aws-sdk-php": "^3.36",
+    "symfony/console": "^3.3",
+    "symfony/filesystem": "^3.3",
+    "symfony/finder": "^5.1@dev",
+    "rdlowrey/auryn": "^1",
+    "matomo/ini": "^2",
+    "ext-posix": "*",
+    "ext-zip": "*",
+    "ext-json": "*"
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "San Kumar",
+      "email": "lambdaphp@gmail.com"
+    }
+  ],
+  "bin": [
+    "bin/llp"
+  ],
+  "autoload": {
+    "psr-4": {
+      "Console\\": "console/"
+    }
+  },
+  "minimum-stability": "dev"
+}
