@@ -1,7 +1,7 @@
-# LambdaPHP Installer
+# LambdaPuppets Installer
 
-This is the composer package that does all the heavy lifting in deploying your PHP site to AWS.
+This is the composer package that does all the heavy lifting in deploying your puppets to AWS.
 
 ## Usage
 
-Please see [lambdaphp/lambdaphp](https://www.github.com/san-kumar/lambdaphp) for more details.
+Please see [lambdapuppets/lambdapuppets](https://www.github.com/san-kumar/lambdapuppets) for more details.
