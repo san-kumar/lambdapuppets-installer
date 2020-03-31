@@ -80,7 +80,7 @@ namespace Console\Utils {
                                 {
                                   "Effect": "Allow",
                                   "Action": [
-                                    "cognito-identity:*"
+                               no     "cognito-identity:*"
                                   ],
                                   "Resource": "*"
                                 },

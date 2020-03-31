@@ -233,7 +233,7 @@ namespace Console\Command {
                             $debug('Connecting REST API to Lambda function');
 
                             $resources = $apiClient->getIterator('GetResources', ['restApiId' => $apiId]);
-                            $createMethod = function ($parentId) use ($apiClient, $apiId, $config, $lambdaFn, $debug) {
+                            $createMethod = function ($parentId) use ($apiClient, $apiId, $config, $lambdaFn, $debug, $awsConfig) {
                                 $debug("Creating API methods for $parentId");
 
                                 $apiClient->putMethod([
@@ -250,7 +250,7 @@ namespace Console\Command {
                                     'restApiId'             => $apiId,
                                     'type'                  => 'AWS_PROXY',
                                     'integrationHttpMethod' => 'POST',
-                                    'uri'                   => sprintf('arn:aws:apigateway:%s:lambda:path/2015-03-31/functions/%s/invocations', $config['region'], $lambdaFn['FunctionArn']),
+                                    'uri'                   => sprintf('arn:aws:apigateway:%s:lambda:path/2015-03-31/functions/%s/invocations', $awsConfig['region'], $lambdaFn['FunctionArn']),
                                 ]);
                             };
 
@@ -281,7 +281,7 @@ namespace Console\Command {
                             $apiClient->createDeployment(['restApiId' => $apiId, 'stageName' => 'web',]);
                         }
 
-                        $uri = sprintf('https://%s.execute-api.%s.amazonaws.com/%s', $apiId, $config['region'], 'web');
+                        $uri = sprintf('https://%s.execute-api.%s.amazonaws.com/%s', $apiId, $awsConfig['region'], 'web');
                         $output->writeln("Your puppets are alive!\n\nTo talk to your puppets just visit these URLs:");
 
                         foreach ($puppets['web'] as $pName => $pConfig) {
