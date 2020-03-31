@@ -25,7 +25,7 @@ exports.handler = async (event, context) => {
         if ((typeof body == 'object') && body.statusCode)
             return context.succeed(body);
 
-        if (typeof module.config == 'object') {
+        if (body && (typeof module.config == 'object')) {
             if (typeof module.config.pipe == 'object') {
                 let pipe = module.config.pipe;
 
