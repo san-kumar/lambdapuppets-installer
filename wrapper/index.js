@@ -52,3 +52,4 @@ exports.handler = async (event, context) => {
 
     return context.succeed({statusCode: 200, body: Buffer.from(body).toString('base64'), headers: {'Access-Control-Allow-Origin': '*', 'Content-Type': 'text/html'}, isBase64Encoded: true});
 };
+
