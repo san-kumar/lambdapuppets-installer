@@ -9,7 +9,6 @@ namespace Console\Utils {
 
     use Console\App\Config;
     use function array_flip;
-    use function array_intersect_assoc;
 
     class AwsConfig {
         /**
@@ -118,7 +117,7 @@ namespace Console\Utils {
 
         public function getPuppeteerLayer() {
             $config = $this->config->readSection('default', []);
-            return $config['layer'] ?? 'arn:aws:lambda:us-east-1:322173628904:layer:chrome:15';
+            return !empty($config['layer']) ? $config['layer'] : require __DIR__ . '/../../config/layer.php';
         }
 
         protected function getAwsDir() {

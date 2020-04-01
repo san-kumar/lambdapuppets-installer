@@ -1,4 +1,5 @@
 const chromium = require('chrome-aws-lambda');
+const zombie = require('zombie');
 const pipes = require('./pipes');
 
 exports.handler = async (event, context) => {
@@ -9,25 +10,32 @@ exports.handler = async (event, context) => {
     try {
         const handler = event.path || 'index';
         const module = require(event.puppetPath || ('/var/task/' + handler.replace(/^\//, '') + '.js'));
+        const config = module.config || {};
 
-        browser = await chromium.puppeteer.launch({
-            args: chromium.args,
-            defaultViewport: chromium.defaultViewport,
-            executablePath: await chromium.executablePath,
-            headless: chromium.headless,
-        });
+        if (typeof module.run !== 'function')
+            throw new Error('module.exports.run function is missing in ' + handler + '.js');
 
-        if (!module.run)
-            throw new Error('module.exports.run is missing in ' + handler + '.js');
+        if (config.browser === 'none') {
+            browser = null;
+        } else if (config.browser === 'zombie') {
+            browser = new zombie();
+        } else {
+            browser = await chromium.puppeteer.launch({
+                args: chromium.args,
+                defaultViewport: chromium.defaultViewport,
+                executablePath: await chromium.executablePath,
+                headless: chromium.headless,
+            });
+        }
 
         body = await module.run(browser, event);
 
         if ((typeof body == 'object') && body.statusCode)
             return context.succeed(body);
 
-        if (body && (typeof module.config == 'object')) {
-            if (typeof module.config.pipe == 'object') {
-                let pipe = module.config.pipe;
+        if (body) {
+            if (typeof config.pipe == 'object') {
+                let pipe = config.pipe;
 
                 if (typeof pipe.telegram == 'object') {
                     await pipes.telegram(pipe.telegram.bot_id, pipe.telegram.chat_id, body);
@@ -45,7 +53,7 @@ exports.handler = async (event, context) => {
     } catch (error) {
         body = "Failed: " + error.toString();
     } finally {
-        if (browser !== null) {
+        if (browser && (typeof browser.close == 'function')) {
             await browser.close();
         }
     }
