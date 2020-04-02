@@ -1,5 +1,3 @@
-const chromium = require('chrome-aws-lambda');
-const zombie = require('zombie');
 const pipes = require('./pipes');
 
 exports.handler = async (event, context) => {
@@ -15,11 +13,17 @@ exports.handler = async (event, context) => {
         if (typeof module.run !== 'function')
             throw new Error('module.exports.run function is missing in ' + handler + '.js');
 
-        if (config.browser === 'none') {
+        if (event.test === true) {
+            const puppeteer = require('puppeteer');
+            browser = await puppeteer.launch({headless: false});
+        } else if (config.browser === 'none') {
             browser = null;
         } else if (config.browser === 'zombie') {
+            const zombie = require('zombie');
             browser = new zombie();
         } else {
+            const chromium = require('chrome-aws-lambda');
+
             browser = await chromium.puppeteer.launch({
                 args: chromium.args,
                 defaultViewport: chromium.defaultViewport,
