@@ -174,9 +174,12 @@ namespace Console\Command {
                         $result = $cloudWatchEventsClient->listTargetsByRule(['Rule' => $ruleName]);
                         $targets = array_map(function ($t) { return $t['Id']; }, $result->get('Targets') ?? []);
 
-                        if (!empty($targets))
+                        if (!empty($targets)) {
+                            $debug('removing cloudwatch targets: %s', join(', ', $targets));
                             $cloudWatchEventsClient->removeTargets(['Ids' => $targets, 'Rule' => $ruleName]);
+                        }
 
+                        //$debug('removing cloudwatch rule: %s', $ruleName);
                         $cloudWatchEventsClient->deleteRule(['Name' => $ruleName]);
                     }
 

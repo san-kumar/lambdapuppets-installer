@@ -28,5 +28,11 @@
       "Console\\": "console/"
     }
   },
+  "repositories": [
+    {
+      "type": "path",
+      "url": "./../lambdapuppets-installer"
+    }
+  ],
   "minimum-stability": "dev"
 }
