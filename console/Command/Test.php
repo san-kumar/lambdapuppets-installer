@@ -70,10 +70,6 @@ namespace Console\Command {
                     system("npm install -C \"$testDir\" || yarn --cwd \"$testDir\" install");
                 }
 
-                if (!is_file("$testDir/test.js")) {
-                    copy(__DIR__ . '/../../config/test.js', "$testDir/test.js");
-                }
-
                 $debug("Copying runtime files");
                 foreach (glob(__DIR__ . '/../../wrapper/*.js') as $file) {
                     copy($file, "$testDir/" . basename($file));
