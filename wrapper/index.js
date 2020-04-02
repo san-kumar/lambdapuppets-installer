@@ -15,7 +15,7 @@ exports.handler = async (event, context) => {
 
         if (event.test === true) {
             const puppeteer = require('puppeteer');
-            browser = await puppeteer.launch({headless: false});
+            browser = await puppeteer.launch({headless: false, slowMo: 200});
         } else if (config.browser === 'none') {
             browser = null;
         } else if (config.browser === 'zombie') {

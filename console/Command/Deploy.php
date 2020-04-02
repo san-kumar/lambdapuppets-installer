@@ -94,11 +94,12 @@ namespace Console\Command {
                     elseif ($pConfig['enabled']) $puppets['web'][$pName] = $pConfig;
                 }
 
+                $projName = $this->config->getProjectName();
                 $zipFile = tempnam(sys_get_temp_dir(), 'lambda') . '.zip';
                 $debug("Creating zipFile: $zipFile");
 
                 if ($zipFile = $this->zipMaker->zip($zipFile, [$dir, realpath(__DIR__ . '/../../wrapper')])) {
-                    $fnName = sprintf('lambda-puppet-%s', $this->config->getProjectName());
+                    $fnName = sprintf('lambda-puppet-%s', $projName);
                     $lambdaClient = new LambdaClient($awsConfig);
 
                     try {
@@ -195,7 +196,7 @@ namespace Console\Command {
                                 'Rule'    => $cwName,
                                 'Targets' => [[
                                     'Arn'   => $lambdaFn['FunctionArn'],
-                                    'Id'    => $config['name'],
+                                    'Id'    => $projName,
                                     'Input' => json_encode(['config' => $pConfig, 'path' => "/$pName", 'cron' => TRUE]),
                                 ]],
                             ]);
