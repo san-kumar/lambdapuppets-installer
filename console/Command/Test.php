@@ -75,7 +75,9 @@ namespace Console\Command {
                     copy($file, "$testDir/" . basename($file));
                 }
 
-                system(sprintf('node "%s" "%s"', "$testDir/test.js", $fPath));
+                $cmd = sprintf('node "%s" "%s"', "$testDir/test.js", $fPath);
+                $debug($cmd);
+                system($cmd);
             } else {
                 $output->writeln("Script $name not found in puppets dir");
                 exit(0);

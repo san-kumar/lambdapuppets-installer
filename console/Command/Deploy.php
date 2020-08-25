@@ -87,11 +87,15 @@ namespace Console\Command {
                     $pName = pathinfo($pupFile, PATHINFO_FILENAME);
                     $pConfig = (array) $this->config->readSection($pName);
                     $pConfig['enabled'] = filter_var($pConfig['enabled'] ?? 'true', FILTER_VALIDATE_BOOLEAN);
+                    $pConfig['web'] = filter_var($pConfig['web'] ?? 'false', FILTER_VALIDATE_BOOLEAN);
 
                     $debug("Adding puppet: $pName");
 
-                    if (!empty($pConfig['cron'])) $puppets['cron'][$pName] = $pConfig;
-                    elseif ($pConfig['enabled']) $puppets['web'][$pName] = $pConfig;
+                    if (!empty($pConfig['cron']))
+                        $puppets['cron'][$pName] = $pConfig;
+
+                    if ($pConfig['enabled'] && (empty($pConfig['cron']) || $pConfig['web']))
+                        $puppets['web'][$pName] = $pConfig;
                 }
 
                 $projName = $this->config->getProjectName();
@@ -143,7 +147,7 @@ namespace Console\Command {
                             'Handler'      => 'index.handler',
                             'Code'         => ['ZipFile' => file_get_contents($zipFile),],
                             'Layers'       => [$this->awsConfig->getPuppeteerLayer()],
-                            'Timeout'      => $config['timeout'] ?? 120,
+                            'Timeout'      => $config['timeout'] ?? 300,
                             'MemorySize'   => round((($config['ram'] ?? 0) >= 128) ? $config['ram'] : 512),
                             'Environment'  => ['Variables' => ['NODE_PATH' => '/opt/node_modules:/opt/nodejs/node12/node_modules:/opt/nodejs/node_modules:/var/runtime/node_modules:/var/runtime:/var/task']],
                             'Publish'      => TRUE,
